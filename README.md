@@ -4,13 +4,13 @@ Toda a comunicação a respeito deste teste deve ser feita através do email thi
 
 # Entrega
 
-O prazo para entrega do teste é de 10 dias após seu envio ao candidato.
-O teste pode ser entregue parcialmente, porém a porcentagem de aderencia ao escopo total será avaliada.
+- O prazo para entrega do teste é de 10 dias após seu envio ao candidato.
+- O teste pode ser entregue parcialmente, porém a porcentagem de aderencia ao escopo total será avaliada.
 
 # Recomendações
 
-Recomendamos uso de arquitetura MVC em ambos os backends.
-Recomendamos que o pull request tem a menor quantidade possível de arquivos para cumprir o desafio.
+- Recomendamos uso de arquitetura MVC em ambos os backends.
+- Recomendamos que o pull request tem a menor quantidade possível de arquivos para cumprir o desafio.
 
 ## Teste Prático — Desenvolvedor Junior
 
