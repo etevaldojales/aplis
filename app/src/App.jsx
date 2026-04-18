@@ -1,120 +1,166 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+// Componentes temporários (o ideal é extrair para a pasta src/pages/ futuramente)
+const Medicos = () => {
+  const [medicos, setMedicos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMedicos = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/medicos');
+        
+        // Tenta ler o corpo da resposta como JSON, independentemente do status.
+        // Isso é crucial para obter a mensagem de erro que vem da API.
+        const data = await response.json();
+
+        if (!response.ok) {
+          // Se a API enviou uma mensagem de erro no JSON, use-a.
+          // Caso contrário, use uma mensagem padrão.
+          throw new Error(data.message || 'Erro ao carregar médicos.');
+        }
+
+        setMedicos(data);
+      } catch (err) {
+        // `err.message` pode ser a mensagem da API, um erro de rede,
+        // ou um erro de parsing de JSON (como o que você viu).
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMedicos();
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div>
+      <h2>Médicos</h2>
+      {loading && <p>Carregando...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {!loading && !error && (
+        <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', textAlign: 'left' }}>
+          <thead>
+            <tr>
+              <th style={{ padding: '8px' }}>ID</th>
+              <th style={{ padding: '8px' }}>Nome</th>
+              <th style={{ padding: '8px' }}>CRM</th>
+              <th style={{ padding: '8px' }}>UF</th>
+            </tr>
+          </thead>
+          <tbody>
+            {medicos.length > 0 ? (
+              medicos.map(medico => (
+                <tr key={medico.id}>
+                  <td style={{ padding: '8px' }}>{medico.id}</td>
+                  <td style={{ padding: '8px' }}>{medico.nome}</td>
+                  <td style={{ padding: '8px' }}>{medico.CRM}</td>
+                  <td style={{ padding: '8px' }}>{medico.UFCRM}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ padding: '8px', textAlign: 'center' }}>Nenhum médico encontrado.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
 
-      <div className="ticks"></div>
+const Pacientes = () => {
+  const [pacientes, setPacientes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/v1/pacientes');
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || data.error || 'Erro ao carregar pacientes.');
+        }
+
+        setPacientes(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPacientes();
+  }, []);
+
+  return (
+    <div>
+      <h2>Pacientes</h2>
+      {loading && <p>Carregando...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {!loading && !error && (
+        <table border="1" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', textAlign: 'left' }}>
+          <thead>
+            <tr>
+              <th style={{ padding: '8px' }}>ID</th>
+              <th style={{ padding: '8px' }}>Nome</th>
+              <th style={{ padding: '8px' }}>Data de Nascimento</th>
+              <th style={{ padding: '8px' }}>CPF</th>
+              <th style={{ padding: '8px' }}>Carteirinha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pacientes.length > 0 ? (
+              pacientes.map(paciente => (
+                <tr key={paciente.id}>
+                  <td style={{ padding: '8px' }}>{paciente.id}</td>
+                  <td style={{ padding: '8px' }}>{paciente.nome}</td>
+                  <td style={{ padding: '8px' }}>{paciente.dataNascimento}</td>
+                  <td style={{ padding: '8px' }}>{paciente.cpf}</td>
+                  <td style={{ padding: '8px' }}>{paciente.carteirinha}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" style={{ padding: '8px', textAlign: 'center' }}>Nenhum paciente encontrado.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+
+function App() {
+  return (
+    <Router>
+      <div className="app-layout">
+        <aside className="sidebar">
+          <h2>apLIS</h2>
+          <nav>
+            <Link to="/medicos" className="nav-link">Médicos</Link>
+            <Link to="/pacientes" className="nav-link">Pacientes</Link>
+          </nav>
+        </aside>
+        
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<h1>Bem-vindo! Selecione uma opção ao lado.</h1>} />
+            <Route path="/medicos" element={<Medicos />} />
+            <Route path="/pacientes" element={<Pacientes />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   )
 }
 
