@@ -1,44 +1,52 @@
-# Comunicação
+# Projeto apLIS - Fullstack
 
-Toda a comunicação a respeito deste teste deve ser feita através do email thiago.barros@prestadores.aplis.inf.br. 
+Esta é uma aplicação fullstack simples para o gerenciamento de Médicos e Pacientes, desenvolvida como parte de um teste prático. A aplicação utiliza uma arquitetura baseada em microsserviços (dois backends independentes) e um frontend Single Page Application (SPA).
 
-# Entrega
+## 🏗 Arquitetura do Projeto
 
-- O prazo para entrega do teste é de 10 dias após seu envio ao candidato.
-- O teste pode ser entregue parcialmente, porém a porcentagem de aderencia ao escopo total será avaliada.
+O projeto é composto por três camadas principais que se comunicam com um banco de dados MySQL compartilhado:
 
-# Recomendações
+1. **Frontend (React com Vite):** Interface de usuário para visualizar, cadastrar, editar e excluir médicos e pacientes.
+2. **Backend JS (Node.js/Express):** API REST responsável pelo gerenciamento de **Pacientes**.
+3. **Backend PHP (Vanilla PHP):** API REST responsável pelo gerenciamento de **Médicos**.
+4. **Banco de Dados (MySQL):** Banco de dados relacional compartilhado entre os dois backends.
 
-- Recomendamos uso de arquitetura MVC em ambos os backends.
-- Recomendamos que o pull request tem a menor quantidade possível de arquivos para cumprir o desafio.
+### Funcionalidades Implementadas (CRUD Completo)
+- Listagem de registros
+- Cadastro de novos registros
+- Edição de registros existentes (Update)
+- Exclusão lógica de registros (Soft Delete)
 
-## Teste Prático — Desenvolvedor Junior
+---
 
-- Para iniciar crie um fork deste repositório para seu perfil.
-- Para entregar crie uma solicitação pull request.
+## 🚀 Como Executar o Projeto
 
-O teste consiste no desenvolvimento de uma aplicação fullstack simples, composta por um frontend em React (SPA), dois backends independentes e um banco de dados MySQL compartilhado.
+### Pré-requisitos
+- **Node.js** (v16 ou superior)
+- **PHP** (v7.4 ou superior)
+- **MySQL** (Recomendado o uso do XAMPP)
 
-O backend em PHP será responsável pelo cadastro e listagem de médicos, enquanto o backend em Node.js será responsável pelo cadastro e listagem de pacientes. Cada backend deve expor endpoints REST para criação e consulta de seus respectivos dados, garantindo que as respostas estejam em formato JSON consistente.
+### 1. Configuração do Banco de Dados
+1. Inicie o servidor MySQL (via painel do XAMPP, por exemplo).
+2. Crie um banco de dados chamado `aplis_db` (ou o nome configurado nos seus arquivos de banco).
+3. Execute os scripts SQL para criar as tabelas `medicos` e `pacientes`.
+   *Importante: Certifique-se de que ambas as tabelas possuam a coluna `deleted_at DATETIME NULL DEFAULT NULL` para suportar a exclusão lógica (Soft Delete).*
+   *Para a tabela de pacientes, recomenda-se usar `DATE` na coluna `dataNascimento`.*
 
-O primeiro backend deverá ser desenvolvido em PHP e contemplar as seguintes rotas:
-- `GET /api/v1/medicos`: obtém todos os médicos retornando conforme exemplo abaixo: 
+### 2. Executando o Backend de Pacientes (Node.js)
+Abra um terminal e navegue até a pasta `backendjs`:
+```bash
+cd backendjs
+npm install
+npm start # ou node server.js/index.js
+```
+A API de pacientes estará rodando em `http://localhost:3000`.
 
-```json
-    [
-        {
-            "id": 1,
-            "nome": "João da Silva",
-            "CRM": "123456",
-            "UFCRM": "CE"
-        },
-        {
-            "id": 2,
-            "nome": "Francisco Pereira",
-            "CRM": "876543",
-            "UFCRM": "CE"
-        }
-    ]
+### 3. Executando o Backend de Médicos (PHP)
+Abra um novo terminal e navegue até a pasta `backendphp`:
+```bash
+cd backendphp
+php -S localhost:8000
 ```
 
 - `POST /api/v1/medicos`: cria um novo médico enviando o body do exemplo abaixo e retornando a mensagem "Médico criado com sucesso".
