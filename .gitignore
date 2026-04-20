@@ -1,2 +1,11 @@
-node_modules
-vendor
+# Dependências
+node_modules/
+vendor/
+
+# Arquivos de ambiente e logs
+.env
+*.log
+
+# Builds de Produção (Frontend)
+dist/
+build/
